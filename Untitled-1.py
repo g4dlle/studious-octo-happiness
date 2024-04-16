@@ -33,15 +33,24 @@ def Rg_pr(FF):
             variable_phi=FF[i,j]/Net[i,j]
             if variable_phi < 1: variable_phi = 1
             f[i,j] = R1_linear(float(variable_phi))*ne[i,j]*Net[i,j] + R2*nm[i,j]**2 + R3*nm[i,j]*ne[i,j] - R4*ne[i,j]*ni[i,j] - R5*ne[i,j]**2*ni[i,j]
+    return f
 
+def Rc_di(FF):
+    f = np.zeros((N,M))
+    for i in range(N):
+        for j in range(M):
+            variable_phi=FF[i,j]/Net[i,j]
+            if variable_phi < 1: variable_phi = 1
+            f[i,j] = Di_linear(float(variable_phi))
+    return f
 # %%
 print('решение')
 t = 0
 while t<= tEnd:
     
     FF,nv = fsolve(FF,ne,ni)
-    ne = parabolic2D(r,z,Rg_pr(FF),ne,-1,mue,FF,Di,tau)
-    ni = parabolic2D(r,z,Rg_pr(FF),ni,1,mui,FF,Di,tau)
+    ne = parabolic2D(r,z,Rg_pr(FF),ne,-1,mue,FF,Rc_di(FF),tau)
+    ni = parabolic2D(r,z,Rg_pr(FF),ni,1,mui,FF,Rc_di(FF),tau)
     #nm = parabolic2D(r,z,_,nm,0,mui,FF,Di,tau)
     t = tau+t
     

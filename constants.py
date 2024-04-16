@@ -15,7 +15,7 @@ ne_0 = 1e18
 k = 1.380649e-23
 T = 300
 
-N = 10
+N = 3
 M = N
 
 ne = np.zeros((N,M))
@@ -40,6 +40,7 @@ for j in range(0,M):
         FF[i,j] = (-50*z[j]**2)
         Net[i,j] = p/(k*T)
         ne[i][j] = ne_0*(1-(r[i]/R)**2)*(z[j]*(L-z[j]))
+
 ni = ne.copy()
 nm = ne.copy()
 
@@ -47,5 +48,3 @@ for i in range(N):
     FF[i,0] = 0 #низ
 for i in range(N):
     FF[i,M-1] = -50
-
-
