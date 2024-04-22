@@ -4,16 +4,18 @@ def fsolve(FF,ne,ni,omega_relax = 1.8):
     FF1 = FF.copy()
     f = e/eps0*(ni-ne)
     d = np.ones((N*M)) #формируем диагональ матрицы СЛАУ
-    l1 = np.zeros((N*M)) 
-    l2 = np.zeros((N*M))
+    l1 = np.zeros((N*M-1)) #верхняя блихняя диагональ
+    l1_ = np.zeros((N*M-1)) #нижняя ближняя диагональ
+    l2 = np.zeros((N*M-N)) #верхняя дальняя диагональ
+    l2_ = np.zeros((N*M-N)) #нижхняя дальняя диагональ
     for j in range(1,M-1):
         for i in range(N-1):
-            k = i+j*N #k = i+j*N
-            d[k] = (r[i]+hr/2)/(r[i]*hr**2) + 2/hz**2 # главная диагональ #d[k] = 2/hr**2 + 2/hz**2
-            
+            k = i+j*N
+            d[k] = (r[i]+hr/2)/(r[i]*hr**2) + 2/hz**2 # главная диагональ
             l1[k] = -(r[i]-hr/2)/(r[i]*hr**2)
+            l1_[k-1] = (r[i]-hr/2)/(r[i]*hr**2)
             l2[k] = -1/hz**2
-        l1[int((j+1)*N-1)] = -1/hr**2
+            l2_[k-N] = -1/hz**2
 
     tol = (1e-2)
     rn_finish = (1e32)
@@ -35,8 +37,11 @@ def fsolve(FF,ne,ni,omega_relax = 1.8):
         for j in range(1,M-1):
             # Граничные условия второго рода слева  
             rr = (FF[0,j]*(2/hr**2) - FF[1,j]*(2/hr**2))\
-                - 1/hz**2 * FF[0,j-1] + 2/hz**2 * FF[0,j] - 1/hz**2 * FF[0,j+1]\
+                - 1/hz**2 * FF[0,j-1] + 4/hz**2 * FF[0,j] - 1/hz**2 * FF[0,j+1]\
                 - f[0,j]
+            '''FF[0,j]*(2/hr**2) - FF[1,j]*(2/hr**2))\
+                - 1/hz**2 * FF[0,j-1] + 2/hz**2 * FF[0,j] - 1/hz**2 * FF[0,j+1]\
+                - f[0,j]'''
             resid[j*N] = rr
             rn = rn+rr**2
             print('rr невязка левые граница', rr )
@@ -45,7 +50,7 @@ def fsolve(FF,ne,ni,omega_relax = 1.8):
             
             # Обходим внутренние узлы
             for i in range(1,N-1):
-                rr = -(FF[i-1,j]*(r[i]- hr/2) -2*FF[i,j]*r[i] + FF[i+1,j]*(r[i]+hr/2)) / (hr**2 * r[i]) -(FF[i,j-1] - 2*FF[i,j] + FF[i,j+1])/hz**2 - f[i,j]
+                rr = -(FF[i-1,j]*(r[i]- hr/2) - 2*FF[i,j]*r[i] + FF[i+1,j]*(r[i]+hr/2)) / (hr**2 * r[i]) -(FF[i,j-1] - 2*FF[i,j] + FF[i,j+1])/hz**2 - f[i,j]
                 corrector[i+j*N] = rr - omega_relax*(l1[i+j*N-1]*corrector[i+j*N -1] 
                                                      - l2[i+(j-1)*N]*corrector[i+(j-1)*N])/d[i+j*N]
               
