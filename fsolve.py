@@ -67,12 +67,7 @@ def fsolve(FF,ne,ni,omega_relax = 1.8):
             rn = rn+rr**2
             FF1[N-1,j] = FF[N-1,j] - (omega_relax*corrector[(j+1)*N-1])
             norm_dif = max(norm_dif,abs(omega_relax*corrector[(j+1)*N-1]))
-      
-        ddd=np.max(np.abs(FF-FF1))
-        try:
-            err_c = norm_dif/ddd
-        except:
-            err_c = 0
+
         FF=FF1.copy()
         rn = rn*hr*hz
         kiter = p
