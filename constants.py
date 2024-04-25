@@ -37,7 +37,7 @@ FF = np.zeros((N,M))
 Net = np.zeros((N,M))
 for j in range(0,M):
     for i in range(0,N):
-        FF[i,j] = (-50*z[j]**2)
+        FF[i,j] = (-50*z[j])
         Net[i,j] = p/(k*T)
         ne[i][j] = ne_0*(1-(r[i]/R)**2)*(z[j]*(L-z[j]))
 

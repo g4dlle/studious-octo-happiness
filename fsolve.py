@@ -37,11 +37,8 @@ def fsolve(FF,ne,ni,omega_relax = 1.8):
         for j in range(1,M-1):
             # Граничные условия второго рода слева  
             rr = (FF[0,j]*(2/hr**2) - FF[1,j]*(2/hr**2))\
-                - 1/hz**2 * FF[0,j-1] + 4/hz**2 * FF[0,j] - 1/hz**2 * FF[0,j+1]\
-                - f[0,j]
-            '''FF[0,j]*(2/hr**2) - FF[1,j]*(2/hr**2))\
                 - 1/hz**2 * FF[0,j-1] + 2/hz**2 * FF[0,j] - 1/hz**2 * FF[0,j+1]\
-                - f[0,j]'''
+                - f[0,j]
             resid[j*N] = rr
             rn = rn+rr**2
             print('rr невязка левые граница', rr )

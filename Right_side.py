@@ -37,3 +37,10 @@ def Rc_di(FF):
             if variable_phi[i,j] < 1: variable_phi[i,j] = 1
             f[i,j] = Di_linear(float(variable_phi[i,j]))
     return f
+
+def Meta():
+    Meta = np.zeros((N,M))
+    for i in range(N):
+        for j in range(M):
+            Meta[i,j] = R6*Net[i,j]*ne[i,j] - R2*nm[i,j]**2 - R3*nm[i,j]*ne[i,j] - R7*nm[i,j] - R8**Net[i,j]*nm[i,j] - R9*nm[i,j]*ne[i,j]
+    return Meta
